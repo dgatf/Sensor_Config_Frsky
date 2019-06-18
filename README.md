@@ -1,4 +1,4 @@
-# Change FRsky sensor Id
+# Change Frsky sensor Id
 
 Lua script to change Frsky sensor id from the radio
 
