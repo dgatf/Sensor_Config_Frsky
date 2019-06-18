@@ -11,3 +11,5 @@ Lua script to change Frsky sensor id from the radio
 - For opentx 2.2 or higher
 
 <p align="center"><img src="./images/chgId.png" width="300"></p>
+
+Ported from er9x. Thanks to MikeB
