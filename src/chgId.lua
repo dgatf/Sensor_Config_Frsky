@@ -4,10 +4,12 @@
       DanielGeA
 
   License https://www.gnu.org/licenses/gpl-3.0.en.html
-    
+
+  Ported from erskyTx. Thnaks to MikeB
+
   Lua script for radios X7/X9 with openTx 2.2
 
-  Change sensor Id 
+  Change sensor Id
 
 ]]--
 
@@ -72,7 +74,7 @@ end
 local function sendId()
   -- send id
   if sendIdState >= 1 and sendIdState <= 15 and getTime() - timestamp > 11 then
-    sportTelemetryPush(sensorIdTx, 0x31, sensor.sensorType.dataId[sensor.sensorType.selected], 0x01 + (sensor.sensorId.selected - 1) * 256)  
+    sportTelemetryPush(sensorIdTx, 0x31, sensor.sensorType.dataId[sensor.sensorType.selected], 0x01 + (sensor.sensorId.selected - 1) * 256)
     timestamp = getTime()
     sendIdState = sendIdState + 1
   end
@@ -82,7 +84,7 @@ local function sendId()
     timestamp = getTime()
     sendIdState = sendIdState + 1
   end
-  if sendIdState == 31 then 
+  if sendIdState == 31 then
     sendIdState = 0
     lcdChange = true
     popupWarning('Sent Id', EVT_EXIT_BREAK)
@@ -103,8 +105,8 @@ local function run_func(event)
     lcd.drawText(1, 11, 'Sensor', 0)
     lcd.drawText(1, 21, 'Sensor Id', 0)
     lcd.drawText(60, 11, sensor.sensorType.list[sensor.sensorType.selected], getFlags(1))
-    if sensor.sensorId.selected ~= 29 then 
-      lcd.drawText(60, 21, sensor.sensorId.selected, getFlags(2)) 
+    if sensor.sensorId.selected ~= 29 then
+      lcd.drawText(60, 21, sensor.sensorId.selected, getFlags(2))
     else
       lcd.drawText(60, 21, '-', getFlags(2))
     end
@@ -127,7 +129,7 @@ local function run_func(event)
   end
   if selection.state == true then
     if event == EVT_ROT_LEFT or event == EVT_MINUS_BREAK then
-      if selection.selected == 1 then 
+      if selection.selected == 1 then
         sensor.sensorId.selected = 29
       end
       decrease(sensor[selection.list[selection.selected]])
