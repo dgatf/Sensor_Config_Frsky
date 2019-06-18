@@ -7,9 +7,9 @@
 
   Ported from erskyTx. Thanks to MikeB
 
-  Lua script for radios X7/X9 with openTx 2.2
+  Lua script for radios X7, X9 and X-lite with openTx 2.2 or higher
 
-  Change sensor Id
+  Change Frsky sensor Id
 
 ]]--
 

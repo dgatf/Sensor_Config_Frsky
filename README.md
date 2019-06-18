@@ -8,6 +8,6 @@ Lua script (ported from erskyTx. Thanks to MikeB) to change Frsky sensor id from
 - Then change the sensor id and long press Menu to update
 - It may be needed to repeat the process if the sensor id is not updated
 - If telemetry is lost after change id, restart Rx and Tx
-- For opentx 2.2 or higher
+- For X7, X9 and X-lite radios with opentx 2.2 or higher
 
 <p align="center"><img src="./images/chgId.png" width="300"></p>
