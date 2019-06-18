@@ -67,7 +67,6 @@ local function readId()
   if readIdState == 31 then
     readIdState = 0
     lcdChange = true
-    popupWarning('Read Id error', EVT_EXIT_BREAK)
   end
 end
 
@@ -118,17 +117,17 @@ local function run_func(event)
 
 -- left = up/decrease right = down/increase
   if selection.state == false then
-    if event == EVT_ROT_LEFT or event == EVT_MINUS_BREAK then
+    if event == EVT_ROT_LEFT or event == EVT_MINUS_BREAK or event == EVT_DOWN_BREAK then
       decrease(selection)
       lcdChange = true
     end
-    if event == EVT_ROT_RIGHT or event == EVT_PLUS_BREAK then
+    if event == EVT_ROT_RIGHT or event == EVT_PLUS_BREAK or event == EVT_UP_BREAK then
       increase(selection)
       lcdChange = true
     end
   end
   if selection.state == true then
-    if event == EVT_ROT_LEFT or event == EVT_MINUS_BREAK then
+    if event == EVT_ROT_LEFT or event == EVT_MINUS_BREAK or event == EVT_DOWN_BREAK then
       if selection.selected == 1 then
         sensor.sensorId.selected = 29
       end
@@ -136,7 +135,7 @@ local function run_func(event)
       if sensor.sensorId.selected - 1 == sensorIdTx then decrease(sensor[selection.list[selection.selected]]) end
       lcdChange = true
     end
-    if event == EVT_ROT_RIGHT or event == EVT_PLUS_BREAK then
+    if event == EVT_ROT_RIGHT or event == EVT_PLUS_BREAK or event == EVT_UP_BREAK then
       if selection.selected == 1 then
         sensor.sensorId.selected = 29
       end
@@ -147,13 +146,13 @@ local function run_func(event)
   end
   if event == EVT_ENTER_BREAK then
     selection.state = not selection.state
-    if selection.selected == 1 and sensor.sensorId.selected == 29 and selection.state == false then
+    if selection.selected == 1 and sensor.sensorId.selected == 29 and sensor.sensorType.selected ~= 11 and selection.state == false then
       readIdState = 1
     end
     lcdChange = true
   end
   if event == EVT_EXIT_BREAK then
-    if selection.selected == 1 and sensor.sensorId.selected == 29 and selection.state == true then
+    if selection.selected == 1 and sensor.sensorId.selected == 29 and sensor.sensorType.selected ~= 11 and selection.state == true then
       readIdState = 1
     end
     selection.state = false
