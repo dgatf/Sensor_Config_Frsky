@@ -12,4 +12,4 @@ Lua script to change Frsky sensor id from the radio
 
 <p align="center"><img src="./images/chgId.png" width="300"></p>
 
-Ported from er9x. Thanks to MikeB
+Ported from erskyTx. Thanks to MikeB
