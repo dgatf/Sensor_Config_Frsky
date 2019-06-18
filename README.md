@@ -1,6 +1,6 @@
 # Change Frsky sensor Id
 
-Lua script to change Frsky sensor id from the radio
+Lua script (ported from erskyTx. Thanks to MikeB) to change Frsky sensor id from the radio
 
 - Connect the sensors to receiver smartport (does not work with the smartport on the radio)
 - Multiple sensors can be connected. Do not connect more than one sensor per type (e.g. two FLVSS) or both will change to the same sensor id
@@ -11,5 +11,3 @@ Lua script to change Frsky sensor id from the radio
 - For opentx 2.2 or higher
 
 <p align="center"><img src="./images/chgId.png" width="300"></p>
-
-Ported from erskyTx. Thanks to MikeB

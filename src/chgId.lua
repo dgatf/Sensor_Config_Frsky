@@ -5,7 +5,7 @@
 
   License https://www.gnu.org/licenses/gpl-3.0.en.html
 
-  Ported from erskyTx. Thnaks to MikeB
+  Ported from erskyTx. Thanks to MikeB
 
   Lua script for radios X7/X9 with openTx 2.2
 
