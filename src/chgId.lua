@@ -7,7 +7,7 @@
 
   Ported from erskyTx. Thanks to MikeB
 
-  Lua script for radios X7, X9 and X-lite with openTx 2.2 or higher
+  Lua script for radios X7, X9, X-lite and Horus with openTx 2.2 or higher
 
   Change Frsky sensor Id
 
@@ -15,7 +15,7 @@
 
 local version = '0.1'
 local refresh = 0
-local lcdChange = false
+local lcdChange = true
 local readIdState = 0
 local sendIdState = 0
 local timestamp = 0
@@ -86,7 +86,6 @@ local function sendId()
   if sendIdState == 31 then
     sendIdState = 0
     lcdChange = true
-    popupWarning('Sent Id', EVT_EXIT_BREAK)
   end
 end
 
@@ -97,22 +96,44 @@ local function bg_func(event)
   if refresh < 5 then refresh = refresh + 1 end
 end
 
+local function refreshHorus()
+  lcd.clear()
+  lcd.drawText(50,50, 'ChangeId v' .. version, 0)
+  lcd.drawText(50, 80, 'Sensor', 0)
+  lcd.drawText(50, 100, 'Sensor Id', 0)
+  lcd.drawText(150, 80, sensor.sensorType.list[sensor.sensorType.selected], getFlags(1))
+  if sensor.sensorId.selected ~= 29 then
+    lcd.drawText(150, 100, sensor.sensorId.selected, getFlags(2))
+  else
+    lcd.drawText(150, 100, '-', getFlags(2))
+  end
+  if readIdState ~=0 then lcd.drawText(50, 120, 'Reading Id...', 0 + INVERS) end
+  if sendIdState ~=0 then lcd.drawText(50, 120, 'Updating Id...', 0 + INVERS) end
+  lcd.drawText(50, 160, 'Long press [ENTER] to update', 0)
+  lcdChange = false
+end
+
+local function refreshTaranis()
+  lcd.clear()
+  lcd.drawScreenTitle('ChangeId v' .. version, 1, 1)
+  lcd.drawText(1, 11, 'Sensor', 0)
+  lcd.drawText(1, 21, 'Sensor Id', 0)
+  lcd.drawText(60, 11, sensor.sensorType.list[sensor.sensorType.selected], getFlags(1))
+  if sensor.sensorId.selected ~= 29 then
+    lcd.drawText(60, 21, sensor.sensorId.selected, getFlags(2))
+  else
+    lcd.drawText(60, 21, '-', getFlags(2))
+  end
+  if readIdState ~=0 then lcd.drawText(1, 38, 'Reading Id...', 0 + INVERS) end
+  if sendIdState ~=0 then lcd.drawText(1, 38, 'Updating Id...', 0 + INVERS) end
+  lcd.drawText(1, 54, 'Long press [ENTER] to update', SMLSIZE)
+  lcdChange = false
+end
+
 local function run_func(event)
+  --print(event)
   if refresh == 5 or lcdChange == true or selection.state == true then
-    lcd.clear()
-    lcd.drawScreenTitle('ChangeId v' .. version, 1, 1)
-    lcd.drawText(1, 11, 'Sensor', 0)
-    lcd.drawText(1, 21, 'Sensor Id', 0)
-    lcd.drawText(60, 11, sensor.sensorType.list[sensor.sensorType.selected], getFlags(1))
-    if sensor.sensorId.selected ~= 29 then
-      lcd.drawText(60, 21, sensor.sensorId.selected, getFlags(2))
-    else
-      lcd.drawText(60, 21, '-', getFlags(2))
-    end
-    if readIdState ~=0 then lcd.drawText(1, 38, 'Reading Id...', 0 + INVERS) end
-    if sendIdState ~=0 then lcd.drawText(1, 38, 'Updating Id...', 0 + INVERS) end
-    lcd.drawText(1, 54, 'Long press [MENU] to update', SMLSIZE)
-    lcdChange = false
+    if LCD_W == 480 then refreshHorus() else refreshTaranis() end
   end
 
 -- left = up/decrease right = down/increase
@@ -144,7 +165,7 @@ local function run_func(event)
       lcdChange = true
     end
   end
-  if event == EVT_ENTER_BREAK then
+  if event == EVT_ENTER_BREAK and sendIdState == 0 then
     selection.state = not selection.state
     if selection.selected == 1 and sensor.sensorId.selected == 29 and sensor.sensorType.selected ~= 11 and selection.state == false then
       readIdState = 1
@@ -158,7 +179,8 @@ local function run_func(event)
     selection.state = false
     lcdChange = true
   end
-  if event == EVT_MENU_BREAK then
+  if event == EVT_ENTER_LONG then
+    -- killEvents(EVT_ENTER_LONG) -- not working
     if sensor.sensorId.selected ~= 29 and sensor.sensorType.selected ~= 11  then
       sendIdState = 1
       lcdChange = true
@@ -167,6 +189,7 @@ local function run_func(event)
   if readIdState > 0 then readId() end
   if sendIdState > 0 then sendId() end
   refresh = 0
+  return 0
 end
 
 return {run=run_func, background=bg_func, init=init_func}
