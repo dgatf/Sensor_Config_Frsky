@@ -13,14 +13,14 @@
 
 ]]--
 
-local version = '0.1'
+local version = '0.2'
 local refresh = 0
 local lcdChange = true
 local readIdState = 0
 local sendIdState = 0
 local timestamp = 0
 local sensorIdTx = 17 -- sensorid 18
-local sensor = {sensorType = {selected = 11, list = {'Vario', 'FAS-40S', 'FLVSS', 'RPM', 'Fuel', 'Accel', 'GPS', 'Air speed', 'R Bus', 'Gas suit',  '-'}, dataId = {0x100, 0x200, 0x300, 0x500, 0x600, 0x700, 0x800, 0xA00, 0xB00, 0xD00}, elements = 10}, sensorId = {selected = 29, elements = 28}}
+local sensor = {sensorType = {selected = 12, list = {'Vario', 'FAS-40S', 'FLVSS', 'RPM', 'Fuel', 'Accel', 'GPS', 'Air speed', 'R Bus', 'Gas suit', 'X8R2ANA', '-'}, dataId = { 0x100, 0x200, 0x300, 0x500, 0x600, 0x700, 0x800, 0xA00, 0xB00, 0xD00, 0xF103 }, elements = 11 }, sensorId = {selected = 29, elements = 28}}
 local selection = {selected = 1, state = false, list = {'sensorType', 'sensorId'}, elements = 2}
 
 local function getFlags(element)
