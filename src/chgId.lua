@@ -71,19 +71,25 @@ local function readId()
 end
 
 local function sendId()
-  -- send id
+  -- stop sensors
   if sendIdState >= 1 and sendIdState <= 15 and getTime() - timestamp > 11 then
+    sportTelemetryPush(sensorIdTx, 0x21, 0xFFFF, 0x80)
+    timestamp = getTime()
+    sendIdState = sendIdState + 1
+  end
+  -- send id
+  if sendIdState >= 16 and sendIdState <= 30 and getTime() - timestamp > 11 then
     sportTelemetryPush(sensorIdTx, 0x31, sensor.sensorType.dataId[sensor.sensorType.selected], 0x01 + (sensor.sensorId.selected - 1) * 256)
     timestamp = getTime()
     sendIdState = sendIdState + 1
   end
   -- restart sensors
-  if sendIdState >= 16 and sendIdState <= 30 and getTime() - timestamp > 11 then
+  if sendIdState >= 31 and sendIdState <= 45 and getTime() - timestamp > 11 then
     sportTelemetryPush(sensorIdTx, 0x20, 0xFFFF, 0x80)
     timestamp = getTime()
     sendIdState = sendIdState + 1
   end
-  if sendIdState == 31 then
+  if sendIdState == 46 then
     sendIdState = 0
     lcdChange = true
   end
