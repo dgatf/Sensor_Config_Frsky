@@ -104,18 +104,19 @@ end
 
 local function refreshHorus()
   lcd.clear()
-  lcd.drawText(50,50, 'ChangeId v' .. version, 0)
-  lcd.drawText(50, 80, 'Sensor', 0)
-  lcd.drawText(50, 100, 'Sensor Id', 0)
-  lcd.drawText(150, 80, sensor.sensorType.list[sensor.sensorType.selected], getFlags(1))
+  lcd.drawRectangle(110, 40, 260, 150)
+  lcd.drawText(180,50, 'ChangeId v' .. version, 0 + INVERS)
+  lcd.drawText(150, 90, 'Sensor', 0)
+  lcd.drawText(150, 110, 'Sensor Id', 0)
+  lcd.drawText(250, 90, sensor.sensorType.list[sensor.sensorType.selected], getFlags(1))
   if sensor.sensorId.selected ~= 29 then
-    lcd.drawText(150, 100, sensor.sensorId.selected, getFlags(2))
+    lcd.drawText(250, 110, sensor.sensorId.selected, getFlags(2))
   else
-    lcd.drawText(150, 100, '-', getFlags(2))
+    lcd.drawText(250, 110, '-', getFlags(2))
   end
-  if readIdState ~=0 then lcd.drawText(50, 120, 'Reading Id...', 0 + INVERS) end
-  if sendIdState ~=0 then lcd.drawText(50, 120, 'Updating Id...', 0 + INVERS) end
-  lcd.drawText(50, 160, 'Long press [ENTER] to update', 0)
+  if readIdState ~=0 then lcd.drawText(150, 130, 'Reading Id...', 0 + INVERS) end
+  if sendIdState ~=0 then lcd.drawText(150, 130, 'Updating Id...', 0 + INVERS) end
+  lcd.drawText(120, 160, 'Long press [ENTER] to update', 0 + INVERS)
   lcdChange = false
 end
 
