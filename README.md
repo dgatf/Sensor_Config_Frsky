@@ -12,4 +12,6 @@ This is a one-time script. Copy the file chgId.lua to SCRIPTS folder in the sdca
 - If telemetry is lost after change id, restart Rx and Tx
 - For X7, X9, X-lite and Horus radios with opentx 2.2 or higher
 
-<p align="center"><img src="./images/chgId.png" width="300"></p>
+<p align="center"><img src="./images/x7.png" width="300"></p>
+<p align="center"><img src="./images/x9.png" width="300"></p>
+<p align="center"><img src="./images/x10.png" width="300"></p>
