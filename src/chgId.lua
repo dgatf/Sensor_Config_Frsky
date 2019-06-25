@@ -131,9 +131,10 @@ local function refreshTaranis()
   else
     lcd.drawText(60, 21, '-', getFlags(2))
   end
-  if readIdState ~=0 then lcd.drawText(1, 38, 'Reading Id...', 0 + INVERS) end
-  if sendIdState ~=0 then lcd.drawText(1, 38, 'Updating Id...', 0 + INVERS) end
-  lcd.drawText(1, 54, 'Long press [ENTER] to update', SMLSIZE)
+  if readIdState ~=0 then lcd.drawText(1, 35, 'Reading Id...', 0 + INVERS) end
+  if sendIdState ~=0 then lcd.drawText(1, 35, 'Updating Id...', 0 + INVERS) end
+  lcd.drawText(1, 46, 'Long press [ENTER] or [MENU]', SMLSIZE)
+  lcd.drawText(1, 54, '              to update', SMLSIZE)
   lcdChange = false
 end
 
@@ -186,7 +187,7 @@ local function run_func(event)
     selection.state = false
     lcdChange = true
   end
-  if event == EVT_ENTER_LONG then
+  if event == EVT_ENTER_LONG or event == EVT_MENU_LONG then
     -- killEvents(EVT_ENTER_LONG) -- not working
     if sensor.sensorId.selected ~= 29 and sensor.sensorType.selected ~= 11  then
       sendIdState = 1
