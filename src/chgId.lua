@@ -13,7 +13,7 @@
 
 ]]--
 
-local version = '0.2'
+local version = '0.2.1'
 local refresh = 0
 local lcdChange = true
 local readIdState = 0
