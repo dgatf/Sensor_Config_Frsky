@@ -13,12 +13,13 @@
 
 ]]--
 
-local version = '0.2.1'
+local version = '0.3'
 local refresh = 0
 local lcdChange = true
-local readIdState = 0
-local sendIdState = 0
-local timestamp = 0
+local readIdState = 40 -- 0-9 stop sensors, 10-19 request id, 20-29 read id, 30-39 restart sensors, 40 ok
+local sendIdState = 30 -- 0-9 stop sensors, 10-19 send id, 20-29 restart sensors, 30 ok
+local tsReadId = 0
+local tsSendId = 0
 local sensorIdTx = 17 -- sensorid 18
 local sensor = {sensorType = {selected = 12, list = {'Vario', 'FAS-40S', 'FLVSS', 'RPM', 'Fuel', 'Accel', 'GPS', 'Air speed', 'R Bus', 'Gas suit', 'X8R2ANA', '-'}, dataId = { 0x100, 0x200, 0x300, 0x500, 0x600, 0x700, 0x800, 0xA00, 0xB00, 0xD00, 0xF103 }, elements = 11 }, sensorId = {selected = 29, elements = 28}}
 local selection = {selected = 1, state = false, list = {'sensorType', 'sensorId'}, elements = 2}
@@ -41,58 +42,49 @@ local function decrease(data)
 end
 
 local function readId()
+  if readIdState == 0 then tsReadId = getTime() end
   -- stop sensors
-  if readIdState >= 1 and readIdState <= 15 and getTime() - timestamp > 11 then
+  if readIdState < 10 then
     sportTelemetryPush(sensorIdTx, 0x21, 0xFFFF, 0x80)
-    timestamp = getTime()
-    readIdState = readIdState + 1
-  end
-  -- request/read id
-  if readIdState >= 16 and readIdState <= 30 then
-    if getTime() - timestamp > 11 then
-      sportTelemetryPush(sensorIdTx, 0x30, sensor.sensorType.dataId[sensor.sensorType.selected], 0x01)
-      timestamp = getTime()
-      readIdState = readIdState + 1
-    else
-      local physicalId, primId, dataId, value = sportTelemetryPop() -- frsky/lua: phys_id/sensor id, type/frame_id, sensor_id/data_id
-      if primId == 0x32 and dataId == sensor.sensorType.dataId[sensor.sensorType.selected] then
-        if bit32.band(value, 0xFF) ==  1 then
-          sensor.sensorId.selected = ((value - 1) / 256) + 1
-          readIdState = 0
-          lcdChange = true
-        end
+    readIdState = readIdState + 10
+  -- request id
+  elseif readIdState < 20 then
+    sportTelemetryPush(sensorIdTx, 0x30, sensor.sensorType.dataId[sensor.sensorType.selected], 0x01)
+    readIdState = readIdState + 10
+  -- read id
+  elseif readIdState < 30 then
+    local physicalId, primId, dataId, value = sportTelemetryPop() -- frsky/lua: phys_id/sensor id, type/frame_id, sensor_id/data_id
+    if primId == 0x32 and dataId == sensor.sensorType.dataId[sensor.sensorType.selected] then
+      if bit32.band(value, 0xFF) ==  1 then
+        sensor.sensorId.selected = ((value - 1) / 256) + 1
+        readIdState = 30
       end
     end
+  -- restart sensors
+  elseif readIdState < 40 then
+    sportTelemetryPush(sensorIdTx, 0x20, 0xFFFF, 0x80)
+    readIdState = readIdState + 10
   end
-  if readIdState == 31 then
-    readIdState = 0
-    lcdChange = true
-  end
+  -- update lcd
+  if readIdState == 40 then lcdChange = true end
 end
 
 local function sendId()
   -- stop sensors
-  if sendIdState >= 1 and sendIdState <= 15 and getTime() - timestamp > 11 then
+  if sendIdState < 10 then
     sportTelemetryPush(sensorIdTx, 0x21, 0xFFFF, 0x80)
-    timestamp = getTime()
-    sendIdState = sendIdState + 1
-  end
+    sendIdState = sendIdState + 10
   -- send id
-  if sendIdState >= 16 and sendIdState <= 30 and getTime() - timestamp > 11 then
+  elseif sendIdState < 20 then
     sportTelemetryPush(sensorIdTx, 0x31, sensor.sensorType.dataId[sensor.sensorType.selected], 0x01 + (sensor.sensorId.selected - 1) * 256)
-    timestamp = getTime()
-    sendIdState = sendIdState + 1
-  end
+    sendIdState = sendIdState + 10
   -- restart sensors
-  if sendIdState >= 31 and sendIdState <= 45 and getTime() - timestamp > 11 then
+  elseif sendIdState < 30 then
     sportTelemetryPush(sensorIdTx, 0x20, 0xFFFF, 0x80)
-    timestamp = getTime()
-    sendIdState = sendIdState + 1
+    sendIdState = sendIdState + 10
   end
-  if sendIdState == 46 then
-    sendIdState = 0
-    lcdChange = true
-  end
+  -- update lcd
+  if sendIdState == 30 then lcdChange = true end
 end
 
 local function init_func()
@@ -114,10 +106,9 @@ local function refreshHorus()
   else
     lcd.drawText(250, 110, '-', getFlags(2))
   end
-  if readIdState ~=0 then lcd.drawText(150, 130, 'Reading Id...', 0 + INVERS) end
-  if sendIdState ~=0 then lcd.drawText(150, 130, 'Updating Id...', 0 + INVERS) end
+  if readIdState < 40 then lcd.drawText(150, 130, 'Reading Id...', 0 + INVERS) end
+  if sendIdState < 30 then lcd.drawText(150, 130, 'Updating Id...', 0 + INVERS) end
   lcd.drawText(120, 160, 'Long press [ENTER] to update', 0 + INVERS)
-  lcdChange = false
 end
 
 local function refreshTaranis()
@@ -131,17 +122,17 @@ local function refreshTaranis()
   else
     lcd.drawText(60, 21, '-', getFlags(2))
   end
-  if readIdState ~=0 then lcd.drawText(1, 35, 'Reading Id...', 0 + INVERS) end
-  if sendIdState ~=0 then lcd.drawText(1, 35, 'Updating Id...', 0 + INVERS) end
+  if readIdState < 40 then lcd.drawText(1, 35, 'Reading Id...', 0 + INVERS) end
+  if sendIdState < 30 then lcd.drawText(1, 35, 'Updating Id...', 0 + INVERS) end
   lcd.drawText(1, 46, 'Long press [ENTER] or [MENU]', SMLSIZE)
   lcd.drawText(1, 54, '              to update', SMLSIZE)
-  lcdChange = false
 end
 
 local function run_func(event)
   --print(event)
   if refresh == 5 or lcdChange == true or selection.state == true then
     if LCD_W == 480 then refreshHorus() else refreshTaranis() end
+    --lcdChange = false
   end
 
 -- left = up/decrease right = down/increase
@@ -173,16 +164,16 @@ local function run_func(event)
       lcdChange = true
     end
   end
-  if event == EVT_ENTER_BREAK and sendIdState == 0 then
+  if event == EVT_ENTER_BREAK and sendIdState == 30 then
     selection.state = not selection.state
     if selection.selected == 1 and sensor.sensorId.selected == 29 and sensor.sensorType.selected ~= 11 and selection.state == false then
-      readIdState = 1
+      readIdState = 0
     end
     lcdChange = true
   end
   if event == EVT_EXIT_BREAK then
     if selection.selected == 1 and sensor.sensorId.selected == 29 and sensor.sensorType.selected ~= 11 and selection.state == true then
-      readIdState = 1
+      readIdState = 0
     end
     selection.state = false
     lcdChange = true
@@ -190,12 +181,15 @@ local function run_func(event)
   if event == EVT_ENTER_LONG or event == EVT_MENU_LONG then
     -- killEvents(EVT_ENTER_LONG) -- not working
     if sensor.sensorId.selected ~= 29 and sensor.sensorType.selected ~= 11  then
-      sendIdState = 1
+      sendIdState = 0
       lcdChange = true
     end
   end
-  if readIdState > 0 then readId() end
-  if sendIdState > 0 then sendId() end
+  if sportTelemetryPush() == true then
+    if readIdState < 40 then readId() end
+    if sendIdState < 30 then sendId() end
+  end
+  if readIdState < 40 and getTime() - tsReadId > 100 then readIdState = 40 end
   refresh = 0
   return 0
 end
