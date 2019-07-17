@@ -132,7 +132,7 @@ local function run_func(event)
   --print(event)
   if refresh == 5 or lcdChange == true or selection.state == true then
     if LCD_W == 480 then refreshHorus() else refreshTaranis() end
-    --lcdChange = false
+    lcdChange = false
   end
 
 -- left = up/decrease right = down/increase
