@@ -15,3 +15,20 @@ This is a one-time script. Copy the file chgId.lua to SCRIPTS folder in the sdca
 <p align="center"><img src="./images/x7.png" width="300"></p>
 <p align="center"><img src="./images/x9.png" width="300"></p>
 <p align="center"><img src="./images/x10.png" width="300"></p>
+
+
+Change log:
+
+v0.3.1
+- X8R2ANA sensor bug fixed
+
+v0.3
+- Protocol updated. Much faster and reliable
+
+v0.2.1
+- Added key MENU for updating as telemetry script
+
+v0.2
+- Support for X-lite and Horus added
+- Script type changed to one-time
+- Sensor X8R2ANA added
