@@ -13,7 +13,7 @@
 
 ]]--
 
-local version = '0.3'
+local version = '0.3.1'
 local refresh = 0
 local lcdChange = true
 local readIdState = 40 -- 0-9 stop sensors, 10-19 request id, 20-29 read id, 30-39 restart sensors, 40 ok
@@ -21,7 +21,8 @@ local sendIdState = 30 -- 0-9 stop sensors, 10-19 send id, 20-29 restart sensors
 local tsReadId = 0
 local tsSendId = 0
 local sensorIdTx = 17 -- sensorid 18
-local sensor = {sensorType = {selected = 12, list = {'Vario', 'FAS-40S', 'FLVSS', 'RPM', 'Fuel', 'Accel', 'GPS', 'Air speed', 'R Bus', 'Gas suit', 'X8R2ANA', '-'}, dataId = { 0x100, 0x200, 0x300, 0x500, 0x600, 0x700, 0x800, 0xA00, 0xB00, 0xD00, 0xF103 }, elements = 11 }, sensorId = {selected = 29, elements = 28}}
+local sensor = {sensorType = {selected = 12, list = {'Vario', 'FAS-40S', 'FLVSS', 'RPM', 'Fuel', 'Accel', 'GPS', 'Air speed', 'R Bus', 'Gas suit', 'X8R2ANA', '-'}, dataId = { 0x100, 0x200, 0x300, 0x500, 0x600, 0x700, 0x800, 0xA00, 0xB00, 0xD00, 0xF103 }, elements = 11 },
+                sensorId = {selected = 29, elements = 28}}
 local selection = {selected = 1, state = false, list = {'sensorType', 'sensorId'}, elements = 2}
 
 local function getFlags(element)
@@ -101,7 +102,7 @@ local function refreshHorus()
   lcd.drawText(150, 90, 'Sensor', 0)
   lcd.drawText(150, 110, 'Sensor Id', 0)
   lcd.drawText(250, 90, sensor.sensorType.list[sensor.sensorType.selected], getFlags(1))
-  if sensor.sensorId.selected ~= 29 then
+  if sensor.sensorId.selected ~= sensor.sensorId.elements + 1 then
     lcd.drawText(250, 110, sensor.sensorId.selected, getFlags(2))
   else
     lcd.drawText(250, 110, '-', getFlags(2))
@@ -117,7 +118,7 @@ local function refreshTaranis()
   lcd.drawText(1, 11, 'Sensor', 0)
   lcd.drawText(1, 21, 'Sensor Id', 0)
   lcd.drawText(60, 11, sensor.sensorType.list[sensor.sensorType.selected], getFlags(1))
-  if sensor.sensorId.selected ~= 29 then
+  if sensor.sensorId.selected ~= sensor.sensorId.elements + 1 then
     lcd.drawText(60, 21, sensor.sensorId.selected, getFlags(2))
   else
     lcd.drawText(60, 21, '-', getFlags(2))
@@ -129,7 +130,6 @@ local function refreshTaranis()
 end
 
 local function run_func(event)
-  --print(event)
   if refresh == 5 or lcdChange == true or selection.state == true then
     if LCD_W == 480 then refreshHorus() else refreshTaranis() end
     lcdChange = false
@@ -149,7 +149,7 @@ local function run_func(event)
   if selection.state == true then
     if event == EVT_ROT_LEFT or event == EVT_MINUS_BREAK or event == EVT_DOWN_BREAK then
       if selection.selected == 1 then
-        sensor.sensorId.selected = 29
+        sensor.sensorId.selected = sensor.sensorId.elements + 1
       end
       decrease(sensor[selection.list[selection.selected]])
       if sensor.sensorId.selected - 1 == sensorIdTx then decrease(sensor[selection.list[selection.selected]]) end
@@ -157,7 +157,7 @@ local function run_func(event)
     end
     if event == EVT_ROT_RIGHT or event == EVT_PLUS_BREAK or event == EVT_UP_BREAK then
       if selection.selected == 1 then
-        sensor.sensorId.selected = 29
+        sensor.sensorId.selected = sensor.sensorId.elements + 1
       end
       increase(sensor[selection.list[selection.selected]])
       if sensor.sensorId.selected -1 == sensorIdTx then increase(sensor[selection.list[selection.selected]]) end
@@ -166,13 +166,13 @@ local function run_func(event)
   end
   if event == EVT_ENTER_BREAK and sendIdState == 30 then
     selection.state = not selection.state
-    if selection.selected == 1 and sensor.sensorId.selected == 29 and sensor.sensorType.selected ~= 11 and selection.state == false then
+    if selection.selected == 1 and sensor.sensorId.selected == sensor.sensorId.elements + 1 and sensor.sensorType.selected ~= sensor.sensorType.elements + 1 and selection.state == false then
       readIdState = 0
     end
     lcdChange = true
   end
   if event == EVT_EXIT_BREAK then
-    if selection.selected == 1 and sensor.sensorId.selected == 29 and sensor.sensorType.selected ~= 11 and selection.state == true then
+    if selection.selected == 1 and sensor.sensorId.selected == sensor.sensorId.elements + 1 and sensor.sensorType.selected ~= sensor.sensorType.elements + 1 and selection.state == true then
       readIdState = 0
     end
     selection.state = false
@@ -180,7 +180,7 @@ local function run_func(event)
   end
   if event == EVT_ENTER_LONG or event == EVT_MENU_LONG then
     -- killEvents(EVT_ENTER_LONG) -- not working
-    if sensor.sensorId.selected ~= 29 and sensor.sensorType.selected ~= 11  then
+    if sensor.sensorId.selected ~= sensor.sensorId.elements + 1 and sensor.sensorType.selected ~= sensor.sensorType.elements + 1  then
       sendIdState = 0
       lcdChange = true
     end
