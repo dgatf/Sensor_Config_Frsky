@@ -21,7 +21,7 @@ Change log:
 
 v0.3.1
 - X8R2ANA sensor bug fixed
-
+ 
 v0.3
 - Protocol updated. Much faster and reliable
 
