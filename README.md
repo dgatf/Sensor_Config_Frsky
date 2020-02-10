@@ -19,7 +19,7 @@ This is a one-time script. Copy the file chgId.lua to SCRIPTS folder in the sdca
 
 Change log:
 
-v0.3.1
+[v0.3.1](https://github.com/dgatf/change_id_frsky/tree/0.3.1)
 - X8R2ANA sensor bug fixed
  
 [v0.3](https://github.com/dgatf/change_id_frsky/tree/0.3)
