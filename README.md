@@ -22,7 +22,7 @@ Change log:
 [v0.3.1](https://github.com/dgatf/change_id_frsky/tree/0.3.1)
 - X8R2ANA sensor bug fixed
  
-[v0.3](https://github.com/dgatf/change_id_frsky/tree/0.3.0)
+[v0.3](https://github.com/dgatf/change_id_frsky/tree/0.3)
 - Protocol updated. Much faster and reliable
 
 [v0.2.1](https://github.com/dgatf/change_id_frsky/tree/0.2.1)
