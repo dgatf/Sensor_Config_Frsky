@@ -22,16 +22,16 @@ Change log:
 v0.3.2
 - Added support for [MSRC](https://github.com/dgatf/msrc)
 
-v0.3.1
+[v0.3.1](https://github.com/dgatf/change_id_frsky/tree/0.3.1)
 - X8R2ANA sensor bug fixed
  
-v0.3
+[v0.3](https://github.com/dgatf/change_id_frsky/tree/0.3)
 - Protocol updated. Much faster and reliable
 
-v0.2.1
+[v0.2.1](https://github.com/dgatf/change_id_frsky/tree/0.2.1)
 - Added key MENU for updating as telemetry script
 
-v0.2
+[v0.2](https://github.com/dgatf/change_id_frsky/tree/0.2.0)
 - Support for X-lite and Horus added
 - Script type changed to one-time
 - Sensor X8R2ANA added
