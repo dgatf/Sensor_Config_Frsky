@@ -13,7 +13,7 @@
 
 ]]--
 
-local version = '0.3.1'
+local version = '0.3.2'
 local refresh = 0
 local lcdChange = true
 local readIdState = 40 -- 0-9 stop sensors, 10-19 request id, 20-29 read id, 30-39 restart sensors, 40 ok
@@ -21,7 +21,7 @@ local sendIdState = 30 -- 0-9 stop sensors, 10-19 send id, 20-29 restart sensors
 local tsReadId = 0
 local tsSendId = 0
 local sensorIdTx = 17 -- sensorid 18
-local sensor = {sensorType = {selected = 12, list = {'Vario', 'FAS-40S', 'FLVSS', 'RPM', 'Fuel', 'Accel', 'GPS', 'Air speed', 'R Bus', 'Gas suit', 'X8R2ANA', '-'}, dataId = { 0x100, 0x200, 0x300, 0x500, 0x600, 0x700, 0x800, 0xA00, 0xB00, 0xD00, 0xF103 }, elements = 11 },
+local sensor = {sensorType = {selected = 13, elements = 12, list = {'Vario', 'FAS-40S', 'FLVSS', 'RPM', 'Fuel', 'Accel', 'GPS', 'Air speed', 'R Bus', 'Gas suit', 'X8R2ANA', 'MSRC', '-'}, dataId = { 0x100, 0x200, 0x300, 0x500, 0x600, 0x700, 0x800, 0xA00, 0xB00, 0xD00, 0xF103, 0x5100 }},
                 sensorId = {selected = 29, elements = 28}}
 local selection = {selected = 1, state = false, list = {'sensorType', 'sensorId'}, elements = 2}
 
