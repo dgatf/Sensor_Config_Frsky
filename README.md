@@ -1,6 +1,6 @@
-# Change Frsky sensor Id
+# Sensor config Frsky
 
-Lua script to change Frsky sensor id from the radio (ported from erskyTx. Thanks to MikeB)
+Lua script to change Frsky sensor config from the radio (ported from erskyTx. Thanks to MikeB)
 
 This is a one-time script. Copy the file chgId.lua to SCRIPTS folder in the sdcard and execute as one-time script from SD-CARD screen (long press and Execute). Since opentx 2.3 copy to SCRIPTS/TOOLS for easier access. It can be executed also as telemetry script (only Taranis) if copied to TELEMETRY folder and assigned to a model's telemetry screen
 
@@ -19,7 +19,12 @@ This is a one-time script. Copy the file chgId.lua to SCRIPTS folder in the sdca
 
 Change log:
 
-v0.3.2
+v0.4
+- Added refresh rate and firmware version
+- Changed name to Sensor Config
+- Improved protocol
+
+[v0.3.2](https://github.com/dgatf/change_id_frsky/tree/0.3.1)
 - Added support for [MSRC](https://github.com/dgatf/msrc)
 
 [v0.3.1](https://github.com/dgatf/change_id_frsky/tree/0.3.1)
